@@ -18,7 +18,7 @@ client = OpenAI(
     api_key=os.getenv("GROQ_API_KEY"), base_url="https://api.groq.com/openai/v1"
 )
 
-GROQ_MODEL = "moonshotai/kimi-k2-instruct"
+GROQ_MODEL = "moonshotai/kimi-k2-instruct-0905"
 GROQ_MAX_OUTPUT_TOKENS = 16384
 
 
