@@ -1,4 +1,4 @@
-# Use Kimi K2 on Claude Code through Groq
+# Use Kimi K2 (or K2.1) on Claude Code through Groq
 
 ## Quick start (uv)
 
