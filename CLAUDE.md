@@ -9,6 +9,7 @@ This is a FastAPI proxy server that enables using the Kimi K2 model (via Groq) w
 ## Commands
 
 ### Setup and Development
+
 ```bash
 # Install uv package manager (if not already installed)
 brew install astral-sh/uv/uv  # or: pipx install uv
@@ -25,6 +26,7 @@ python proxy.py
 ```
 
 ### Using with Claude Code
+
 ```bash
 # Set environment variables to redirect Claude Code to the proxy
 export ANTHROPIC_BASE_URL=http://localhost:7187

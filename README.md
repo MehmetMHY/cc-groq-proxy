@@ -1,17 +1,14 @@
 # Use Kimi K2 (or K2.1) on Claude Code through Groq
 
-## Quick start (uv)
+## Quick start
 
 ```bash
 export GROQ_API_KEY=YOUR_GROQ_API_KEY
 
-# one-time setup
-brew install astral-sh/uv/uv   # or pipx install uv
-
 # project setup
-uv venv .venv
+python -m venv .venv
 source .venv/bin/activate
-uv pip install -e .
+pip install -e .
 
 # run the proxy
 python proxy.py

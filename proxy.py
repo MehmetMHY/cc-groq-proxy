@@ -27,25 +27,30 @@ class ContentBlock(BaseModel):
     type: Literal["text"]
     text: str
 
+
 class ToolUseBlock(BaseModel):
     type: Literal["tool_use"]
     id: str
     name: str
     input: Dict[str, Union[str, int, float, bool, dict, list]]
 
+
 class ToolResultBlock(BaseModel):
     type: Literal["tool_result"]
     tool_use_id: str
     content: Union[str, List[Dict[str, Any]], Dict[str, Any], List[Any], Any]
 
+
 class Message(BaseModel):
     role: Literal["user", "assistant"]
     content: Union[str, List[Union[ContentBlock, ToolUseBlock, ToolResultBlock]]]
+
 
 class Tool(BaseModel):
     name: str
     description: Optional[str]
     input_schema: Dict[str, Any]
+
 
 class MessagesRequest(BaseModel):
     model: str
@@ -55,6 +60,7 @@ class MessagesRequest(BaseModel):
     stream: Optional[bool] = False
     tools: Optional[List[Tool]] = None
     tool_choice: Optional[Union[str, Dict[str, str]]] = "auto"
+
 
 # ---------- Conversion Helpers ----------
 
@@ -74,12 +80,13 @@ def convert_messages(messages: List[Message]) -> List[dict]:
                     parts.append(tool_info)
                 elif block.type == "tool_result":
                     result = block.content
-                    print(f"[bold yellow]📥 Tool Result for {block.tool_use_id}: {json.dumps(result, indent=2)}[/bold yellow]")
+                    print(
+                        f"[bold yellow]📥 Tool Result for {block.tool_use_id}: {json.dumps(result, indent=2)}[/bold yellow]"
+                    )
                     parts.append(f"<tool_result>{json.dumps(result)}</tool_result>")
             content = "\n".join(parts)
         converted.append({"role": m.role, "content": content})
     return converted
-
 
 
 def convert_tools(tools: List[Tool]) -> List[dict]:
@@ -102,7 +109,9 @@ def convert_tool_calls_to_anthropic(tool_calls) -> List[dict]:
         fn = call.function
         arguments = json.loads(fn.arguments)
 
-        print(f"[bold green]🛠 Tool Call: {fn.name}({json.dumps(arguments, indent=2)})[/bold green]")
+        print(
+            f"[bold green]🛠 Tool Call: {fn.name}({json.dumps(arguments, indent=2)})[/bold green]"
+        )
 
         content.append(
             {"type": "tool_use", "id": call.id, "name": fn.name, "input": arguments}
@@ -119,11 +128,15 @@ async def proxy(request: MessagesRequest):
 
     openai_messages = convert_messages(request.messages)
     tools = convert_tools(request.tools) if request.tools else None
-    
-    max_tokens = min(request.max_tokens or GROQ_MAX_OUTPUT_TOKENS, GROQ_MAX_OUTPUT_TOKENS)
-    
+
+    max_tokens = min(
+        request.max_tokens or GROQ_MAX_OUTPUT_TOKENS, GROQ_MAX_OUTPUT_TOKENS
+    )
+
     if request.max_tokens and request.max_tokens > GROQ_MAX_OUTPUT_TOKENS:
-        print(f"[bold yellow]⚠️  Capping max_tokens from {request.max_tokens} to {GROQ_MAX_OUTPUT_TOKENS}[/bold yellow]")
+        print(
+            f"[bold yellow]⚠️  Capping max_tokens from {request.max_tokens} to {GROQ_MAX_OUTPUT_TOKENS}[/bold yellow]"
+        )
 
     completion = client.chat.completions.create(
         model=GROQ_MODEL,
