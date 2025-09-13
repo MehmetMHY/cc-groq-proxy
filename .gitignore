@@ -205,3 +205,12 @@ venv/
 .vscode/
 .gemini/
 .ch/
+
+# Docker
+docker-compose.override.yml
+.dockerignore.bak
+
+# Logs
+*.log
+logs/
+meme*

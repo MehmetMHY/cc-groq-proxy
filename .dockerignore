@@ -1,0 +1,49 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+CLAUDE.md
+LICENSE.md
+
+# Environment files
+.env*
+.envrc
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.coverage
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+.cursor/
+.claude/
+.gemini/
+.ch/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Scripts (not needed in container)
+call.sh
+run.sh
+
+# Logs
+*.log
+logs/
+
+# Docker
+.dockerignore
+docker-compose*.yml
+
+# Misc
+.ruff_cache/

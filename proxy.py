@@ -1,5 +1,7 @@
+import argparse
 import json
 import os
+import sys
 import uuid
 from typing import Any, Dict, List, Literal, Optional, Union
 
@@ -14,12 +16,36 @@ from rich import print
 load_dotenv()
 app = FastAPI()
 
-client = OpenAI(
-    api_key=os.getenv("GROQ_API_KEY"), base_url="https://api.groq.com/openai/v1"
-)
+# Default configuration
+DEFAULT_GROQ_MODEL = "moonshotai/kimi-k2-instruct-0905"
+DEFAULT_GROQ_MAX_OUTPUT_TOKENS = 16384
 
-GROQ_MODEL = "moonshotai/kimi-k2-instruct-0905"
-GROQ_MAX_OUTPUT_TOKENS = 16384
+# Parse command line arguments
+parser = argparse.ArgumentParser(description="Groq Anthropic Tool Proxy")
+parser.add_argument(
+    "--model",
+    default=DEFAULT_GROQ_MODEL,
+    help=f"Model to use (default: {DEFAULT_GROQ_MODEL})",
+)
+parser.add_argument(
+    "--max-tokens",
+    type=int,
+    default=DEFAULT_GROQ_MAX_OUTPUT_TOKENS,
+    help=f"Maximum output tokens (default: {DEFAULT_GROQ_MAX_OUTPUT_TOKENS})",
+)
+args = parser.parse_args()
+
+# Check for required API key
+groq_api_key = os.getenv("GROQ_API_KEY")
+if not groq_api_key:
+    print("[bold red]❌ GROQ_API_KEY environment variable is not set![/bold red]")
+    print("Setup and get your Groq API key here: https://console.groq.com/")
+    sys.exit(1)
+
+client = OpenAI(api_key=groq_api_key, base_url="https://api.groq.com/openai/v1")
+
+GROQ_MODEL = args.model
+GROQ_MAX_OUTPUT_TOKENS = args.max_tokens
 
 
 # ---------- Anthropic Schema ----------
@@ -129,6 +155,15 @@ async def proxy(request: MessagesRequest):
     openai_messages = convert_messages(request.messages)
     tools = convert_tools(request.tools) if request.tools else None
 
+    # Log the input messages
+    print(f"[bold blue]📝 INPUT TO MODEL:[/bold blue]")
+    for msg in openai_messages:
+        print(f"[blue]Role: {msg['role']}[/blue]")
+        print(
+            f"[blue]Content: {msg['content'][:500]}{'...' if len(msg['content']) > 500 else ''}[/blue]"
+        )
+        print("[blue]---[/blue]")
+
     max_tokens = min(
         request.max_tokens or GROQ_MAX_OUTPUT_TOKENS, GROQ_MAX_OUTPUT_TOKENS
     )
@@ -150,12 +185,27 @@ async def proxy(request: MessagesRequest):
     choice = completion.choices[0]
     msg = choice.message
 
+    # Log the output from model
+    print(f"[bold green]📤 OUTPUT FROM MODEL:[/bold green]")
     if msg.tool_calls:
+        print(f"[green]Tool calls: {len(msg.tool_calls)} calls made[/green]")
+        for call in msg.tool_calls:
+            print(f"[green]Tool: {call.function.name}[/green]")
         tool_content = convert_tool_calls_to_anthropic(msg.tool_calls)
         stop_reason = "tool_use"
     else:
+        output_content = msg.content or ""
+        print(
+            f"[green]Content: {output_content[:500]}{'...' if len(output_content) > 500 else ''}[/green]"
+        )
         tool_content = [{"type": "text", "text": msg.content}]
         stop_reason = "end_turn"
+    print("[green]---[/green]")
+
+    # Log token usage
+    print(
+        f"[bold magenta]📊 TOKENS: Input: {completion.usage.prompt_tokens} | Output: {completion.usage.completion_tokens} | Total: {completion.usage.total_tokens}[/bold magenta]"
+    )
 
     return {
         "id": f"msg_{uuid.uuid4().hex[:12]}",
