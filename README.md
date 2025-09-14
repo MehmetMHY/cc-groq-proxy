@@ -39,13 +39,10 @@ export GROQ_API_KEY=your_groq_api_key_here
 
 ```bash
 # Build the Docker image
-./run.sh build
+python run.py build
 
 # Start the proxy (interactive model/token selection with fzf)
-./run.sh run
-
-# Or specify model and tokens directly
-./run.sh --model llama-3.1-70b-versatile --max-tokens 8192 run
+python run.py run
 ```
 
 ### Usage
@@ -72,29 +69,47 @@ This script sets the proxy URL, starts Claude Code, and cleans up the environmen
 
 ## Management Commands
 
-The `run.sh` script provides several commands for managing the proxy:
+The `run.py` script provides several commands for managing the proxy:
 
 ```bash
 # Build the Docker image
-./run.sh build
+python run.py build
 
 # Start the proxy container (interactive selection)
-./run.sh run
+python run.py run
 
 # Stop the proxy container
-./run.sh stop
+python run.py stop
 
 # Show container status and resource usage
-./run.sh status
+python run.py status
 
 # View container logs
-./run.sh logs
+python run.py logs
 
 # Follow container logs in real-time
-./run.sh follow
+python run.py follow
 
 # Show help
-./run.sh --help
+python run.py --help
+```
+
+## Advanced Usage
+
+For direct Docker control without the management script:
+
+```bash
+# Build image manually
+docker build -t claude-code-groq-proxy .
+
+# Run with specific model and token limit
+docker run -d --name cc-groq-proxy -p 7187:7187 \
+  -e GROQ_API_KEY=your_key \
+  claude-code-groq-proxy \
+  python proxy.py --model llama-3.1-70b-versatile --max-tokens 8192
+
+# Stop and remove
+docker stop cc-groq-proxy && docker rm cc-groq-proxy
 ```
 
 ## Features
