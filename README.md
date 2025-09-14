@@ -134,9 +134,9 @@ Inspired by [claude-code-proxy](https://github.com/1rgs/claude-code-proxy) and t
 
 This code base is licensed under the MIT License. See [LICENSE](./LICENSE.md) for more details.
 
-## Evaluation Report (09/07/2025)
+## Evaluation Reports
 
-### 09/07/2025
+### September 14, 2025
 
 #### Overview
 
