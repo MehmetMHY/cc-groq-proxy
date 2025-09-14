@@ -17,7 +17,7 @@ load_dotenv()
 app = FastAPI()
 
 # Default configuration
-DEFAULT_GROQ_MODEL = "moonshotai/kimi-k2-instruct-0905"
+DEFAULT_GROQ_MODEL = "openai/gpt-oss-120b"
 DEFAULT_GROQ_MAX_OUTPUT_TOKENS = 16384
 
 # Parse command line arguments

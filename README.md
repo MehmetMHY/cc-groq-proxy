@@ -10,23 +10,23 @@ A FastAPI proxy server that enables using any text-based model hosted on Groq wi
 
 #### Required Dependencies
 
-- [Docker](https://www.docker.com/get-started/) - Container platform for running the proxy
-- [Groq API Key](https://console.groq.com/) - Sign up for free API access to Groq's models
-- [Claude Code CLI](https://github.com/anthropics/claude-code) - Anthropic's command-line interface
+- [Docker](https://www.docker.com/get-started/): Container platform for running the proxy
+- [Groq API Key](https://console.groq.com/): Sign up for free API access to Groq's models
+- [Claude Code CLI](https://github.com/anthropics/claude-code): Anthropic's command-line interface
 
 #### Optional Dependencies
 
-- [fzf](https://github.com/junegunn/fzf) - Fuzzy finder for interactive model and token selection
-- [Python 3.8+](https://www.python.org/) - Only needed for local development (not Docker usage)
-- [pip](https://pip.pypa.io/en/stable/installation/) - Python package manager (for local development)
+- [fzf](https://github.com/junegunn/fzf): Fuzzy finder for interactive model and token selection
+- [Python 3.8+](https://www.python.org/): Only needed for local development (not Docker usage)
+- [pip](https://pip.pypa.io/en/stable/installation/): Python package manager (for local development)
 
 ### Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/MehmetMHY/claude-code-kimi-groq
-cd claude-code-kimi-groq
+git clone https://github.com/MehmetMHY/cc-groq-proxy.git
+cd cc-groq-proxy
 ```
 
 2. Configure your Groq API key:
@@ -99,7 +99,7 @@ The `run.sh` script provides several commands for managing the proxy:
 
 ## Features
 
-- **Universal Groq Model Support**: Works with any text-based model on Groq (Kimi K2, Llama, Mixtral, etc.)
+- **Universal Groq Model Support**: Works with any text-based model on Groq (OpenAI OSS, Kimi K2, Llama, etc)
 - **Interactive Model Selection**: Uses `fzf` to browse and select from available Groq models
 - **Token Limit Configuration**: Choose from 4096 to 1,048,576 tokens in 1024 increments
 - **Detailed Logging**: View input/output content and token usage for debugging
@@ -129,17 +129,17 @@ Anthropic's Claude models Sonnet 4 and Opus 4.1 are used in [Claude Code CLI](ht
 
 #### Pricing Comparison
 
-- **Claude Sonnet 4**: \$3/M input, \$15/M output
-- **Claude Opus 4.1**: \$15/M input, \$75/M output
-- **Groq Kimi K2-0905**: \$1/M input, \$3/M output
+- **Claude Sonnet 4**: $3/M input, $15/M output
+- **Claude Opus 4.1**: $15/M input, $75/M output
+- **Groq Kimi K2-0905**: $1/M input, $3/M output
 
 This makes Kimi **67–93% cheaper on input** and **80–96% cheaper on output**, depending on which Claude tier you compare against.
 
 #### Performance
 
-- **Coding**: Kimi scores \~70–80% as strong as Claude Sonnet/Opus in benchmarked tasks. It trails slightly on curated coding sets but sometimes matches or exceeds in interactive coding (e.g., LiveCodeBench).
+- **Coding**: Kimi scores ~70–80% as strong as Claude Sonnet/Opus in benchmarked tasks. It trails slightly on curated coding sets but sometimes matches or exceeds in interactive coding (e.g., LiveCodeBench).
 - **Writing**: Comparable technical writing performance, though Claude remains more polished on complex narrative tasks.
-- **Context**: Kimi supports \~262k tokens vs Claude’s 1M, but this is sufficient for most CLI use cases.
+- **Context**: Kimi supports ~262k tokens vs Claude’s 1M, but this is sufficient for most CLI use cases.
 
 #### Conclusion
 

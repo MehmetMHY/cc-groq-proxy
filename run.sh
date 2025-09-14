@@ -1,7 +1,7 @@
 #!/bin/bash
 
-IMAGE_NAME="claude-code-kimi-groq"
-CONTAINER_NAME="kimi-proxy"
+IMAGE_NAME="claude-code-groq-proxy"
+CONTAINER_NAME="cc-groq-proxy"
 PORT="7187"
 
 check_groq_key() {
@@ -22,7 +22,6 @@ get_groq_models() {
 		echo "GROQ_API_KEY not set"
 		return 1
 	fi
-
 	curl -s -H "Authorization: Bearer $GROQ_API_KEY" \
 		-H "Content-Type: application/json" \
 		"https://api.groq.com/openai/v1/models" |
@@ -33,35 +32,23 @@ select_model_interactive() {
 	if [ -n "$MODEL_ARG" ]; then
 		return
 	fi
-
-	# Check if fzf is available
 	if ! command -v fzf &>/dev/null; then
 		echo "fzf not found. Please install fzf for interactive model selection."
-		echo "Using default model."
-		MODEL_ARG="--model moonshotai/kimi-k2-instruct-0905"
-		return
+		exit 1
 	fi
-
 	echo "Fetching available models..."
 	local models=$(get_groq_models)
-
 	if [ -z "$models" ]; then
-		echo "No models available, using default"
-		MODEL_ARG="--model moonshotai/kimi-k2-instruct-0905"
-		return
+		echo "No models available."
+		exit 1
 	fi
-
-	# Create model list with DEFAULT at the top
-	local model_list=$(printf "DEFAULT (moonshotai/kimi-k2-instruct-0905)\n%s" "$models")
-
+	local model_list=$(printf "DEFAULT\n%s" "$models")
 	local selected_model=$(echo "$model_list" | fzf --prompt="Select model: " --reverse)
-
 	if [ $? -ne 0 ] || [ -z "$selected_model" ]; then
 		echo "Selection cancelled or no model selected. Exiting."
 		exit 1
-	elif [ "$selected_model" = "DEFAULT (moonshotai/kimi-k2-instruct-0905)" ]; then
+	elif [ "$selected_model" = "DEFAULT" ]; then
 		echo "Selected: DEFAULT"
-		MODEL_ARG="--model moonshotai/kimi-k2-instruct-0905"
 	else
 		echo "Selected: $selected_model"
 		MODEL_ARG="--model $selected_model"
@@ -72,29 +59,20 @@ select_tokens_interactive() {
 	if [ -n "$TOKEN_ARG" ]; then
 		return
 	fi
-
-	# Check if fzf is available
 	if ! command -v fzf &>/dev/null; then
-		echo "fzf not found. Using default max tokens."
-		TOKEN_ARG="--max-tokens 16384"
-		return
+		echo "fzf not found. Please install fzf for interactive token selection."
+		exit 1
 	fi
-
-	# Common token limits with DEFAULT at the top - intervals of 1024 from 4096 to 1048576
-	local token_options="DEFAULT (16384)"
+	local token_options="DEFAULT"
 	for ((i = 4096; i <= 1048576; i += 1024)); do
-		token_options="${token_options}
-${i}"
+		token_options="${token_options}\n${i}"
 	done
-
-	local selected_tokens=$(echo "$token_options" | fzf --prompt="Select max tokens: " --height=10 --reverse)
-
+	local selected_tokens=$(echo -e "$token_options" | fzf --prompt="Select max tokens: " --reverse)
 	if [ $? -ne 0 ] || [ -z "$selected_tokens" ]; then
 		echo "Selection cancelled or no tokens selected. Exiting."
 		exit 1
-	elif [ "$selected_tokens" = "DEFAULT (16384)" ]; then
-		echo "Selected: DEFAULT (16384)"
-		TOKEN_ARG="--max-tokens 16384"
+	elif [ "$selected_tokens" = "DEFAULT" ]; then
+		echo "Selected: DEFAULT"
 	else
 		echo "Selected: $selected_tokens tokens"
 		TOKEN_ARG="--max-tokens $selected_tokens"
@@ -103,16 +81,13 @@ ${i}"
 
 run_container() {
 	check_groq_key
-
 	if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
 		echo "Container $CONTAINER_NAME is already running"
 		docker ps -f name=$CONTAINER_NAME
 		return
 	fi
-
 	select_model_interactive
 	select_tokens_interactive
-
 	echo "Starting container..."
 	docker run -d \
 		--name $CONTAINER_NAME \
@@ -120,7 +95,6 @@ run_container() {
 		-e GROQ_API_KEY="$GROQ_API_KEY" \
 		$IMAGE_NAME \
 		python proxy.py $MODEL_ARG $TOKEN_ARG
-
 	echo "Proxy started on http://localhost:$PORT"
 	docker ps -f name=$CONTAINER_NAME
 }
@@ -169,9 +143,9 @@ show_status() {
 }
 
 show_help() {
-	echo "Usage: $0 [OPTIONS] COMMAND"
+	echo $'\e[4mUsage:\e[24m $0 [OPTIONS] COMMAND'
 	echo ""
-	echo "Commands:"
+	echo $'\e[4mCommands:\e[24m'
 	echo "  build              Build the Docker image"
 	echo "  run                Start the proxy container"
 	echo "  stop               Stop and remove the container"
@@ -179,13 +153,12 @@ show_help() {
 	echo "  logs               Show container logs"
 	echo "  follow             Follow container logs (live)"
 	echo ""
-	echo "Options:"
+	echo $'\e[4mOptions:\e[24m'
 	echo "  -m, --model MODEL      Specify model to use (for run command)"
 	echo "  -t, --max-tokens N     Specify max tokens (for run command)"
 	echo "  -h, --help             Show this help"
 }
 
-# Parse arguments
 while [[ $# -gt 0 ]]; do
 	case $1 in
 	-m | --model)
@@ -236,13 +209,11 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-# If no command specified, show help
 if [ -z "$COMMAND" ]; then
 	show_help
 	exit 1
 fi
 
-# Execute command
 case $COMMAND in
 build)
 	build_image
