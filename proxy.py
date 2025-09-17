@@ -47,6 +47,10 @@ client = OpenAI(api_key=groq_api_key, base_url="https://api.groq.com/openai/v1")
 GROQ_MODEL = args.model
 GROQ_MAX_OUTPUT_TOKENS = args.max_tokens
 
+# Log initial configuration
+print(f"[bold green]Model: {GROQ_MODEL}[/bold green]")
+print(f"[bold green]Max Output Tokens: {GROQ_MAX_OUTPUT_TOKENS:,}[/bold green]")
+
 
 # ---------- Anthropic Schema ----------
 class ContentBlock(BaseModel):

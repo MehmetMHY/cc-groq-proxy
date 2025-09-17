@@ -39,10 +39,10 @@ export GROQ_API_KEY=your_groq_api_key_here
 
 ```bash
 # Build the Docker image
-python run.py build
+python cli.py --build
 
 # Start the proxy (interactive model/token selection with fzf)
-python run.py run
+python cli.py --run
 ```
 
 ### Usage
@@ -69,29 +69,32 @@ This script sets the proxy URL, starts Claude Code, and cleans up the environmen
 
 ## Management Commands
 
-The `run.py` script provides several commands for managing the proxy:
+The `cli.py` script provides several commands for managing the proxy:
 
 ```bash
 # Build the Docker image
-python run.py build
+python cli.py --build     # or python cli.py -b
 
 # Start the proxy container (interactive selection)
-python run.py run
+python cli.py --run       # or python cli.py -r
 
 # Stop the proxy container
-python run.py stop
+python cli.py --stop      # or python cli.py -s
 
 # Show container status and resource usage
-python run.py status
+python cli.py --status    # or python cli.py -t
 
 # View container logs
-python run.py logs
+python cli.py --logs      # or python cli.py -l
 
 # Follow container logs in real-time
-python run.py follow
+python cli.py --follow    # or python cli.py -f
 
-# Show help
-python run.py --help
+# Reset container (stop → build → run)
+python cli.py --reset     # or python cli.py -x
+
+# Show help (default when no options provided)
+python cli.py --help      # or python cli.py
 ```
 
 ## Advanced Usage
@@ -120,7 +123,7 @@ docker stop cc-groq-proxy && docker rm cc-groq-proxy
 - **Detailed Logging**: View input/output content and token usage for debugging
 - **Docker-based**: Easy deployment and management with zero local Python setup
 - **Cost Monitoring**: Track token usage per request
-- **Convenience Scripts**: Quick setup with `call.sh` and comprehensive management with `run.sh`
+- **Convenience Scripts**: Quick setup with `call.sh` and comprehensive CLI management with `cli.py`
 
 ## Feedback
 

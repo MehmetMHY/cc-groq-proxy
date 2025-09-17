@@ -162,6 +162,11 @@ def run_container():
         subprocess.run(["docker", "ps", "-f", f"name={CONTAINER_NAME}"])
         return
 
+    # Remove existing stopped container if it exists
+    if container_exists_any():
+        print(f"Removing existing stopped container {CONTAINER_NAME}...")
+        subprocess.run(["docker", "rm", CONTAINER_NAME], check=False)
+
     model_arg = select_model_interactive("")
     token_arg = select_tokens_interactive("")
 
@@ -231,38 +236,75 @@ def show_status():
         print("❌ Container does not exist")
 
 
+def reset_container():
+    """Stop, build, and run the container in sequence"""
+    print("🔄 Resetting container (stop → build → run)...")
+
+    # Stop existing container
+    stop_container()
+
+    # Build image
+    build_image()
+
+    # Run new container
+    run_container()
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Docker proxy management CLI")
-    subparsers = parser.add_subparsers(dest="command", metavar="")
+    parser = argparse.ArgumentParser(
+        description="Claude Code Groq Proxy - Docker management CLI"
+    )
 
-    subparsers.add_parser("build", help="Build the Docker image")
-
-    subparsers.add_parser("run", help="Start the proxy container")
-
-    subparsers.add_parser("stop", help="Stop and remove the container")
-    subparsers.add_parser("status", help="Show container status")
-    subparsers.add_parser("logs", help="Show container logs")
-    subparsers.add_parser("follow", help="Follow container logs (live)")
+    # Add mutually exclusive group for actions
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "-b", "--build", action="store_true", help="Build the Docker image"
+    )
+    group.add_argument(
+        "-r", "--run", action="store_true", help="Start the proxy container"
+    )
+    group.add_argument(
+        "-s", "--stop", action="store_true", help="Stop and remove the container"
+    )
+    group.add_argument(
+        "-t",
+        "--status",
+        action="store_true",
+        help="Show container status and resource usage",
+    )
+    group.add_argument("-l", "--logs", action="store_true", help="Show container logs")
+    group.add_argument(
+        "-f", "--follow", action="store_true", help="Follow container logs in real-time"
+    )
+    group.add_argument(
+        "-x",
+        "--reset",
+        action="store_true",
+        help="Reset container (stop → build → run)",
+    )
 
     args = parser.parse_args()
 
-    if not args.command:
+    # If no arguments provided, show help
+    if not any(vars(args).values()):
         parser.print_help()
-        sys.exit(1)
+        sys.exit(0)
 
     try:
-        if args.command == "build":
+        if args.build:
             build_image()
-        elif args.command == "run":
+        elif args.run:
             run_container()
-        elif args.command == "stop":
+        elif args.stop:
             stop_container()
-        elif args.command == "status":
+        elif args.status:
             show_status()
-        elif args.command == "logs":
+        elif args.logs:
             show_logs()
-        elif args.command == "follow":
+        elif args.follow:
             follow_logs()
+        elif args.reset:
+            reset_container()
     except subprocess.CalledProcessError:
         sys.exit(1)
     except KeyboardInterrupt:
