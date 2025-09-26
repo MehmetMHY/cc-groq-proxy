@@ -29,25 +29,32 @@ git clone https://github.com/MehmetMHY/cc-groq-proxy.git
 cd cc-groq-proxy
 ```
 
-2. Configure your Groq API key:
+2. Run the installer to make the `ccg` command available system-wide:
+
+```bash
+bash install.sh
+```
+
+This command simplifies all interactions with the proxy.
+
+3. Configure your Groq API key:
 
 ```bash
 export GROQ_API_KEY=your_groq_api_key_here
 ```
 
-3. Build and run with Docker:
+### Command-Line Wrapper (`ccg`)
 
-```bash
-# Build the Docker image
-python cli.py --build
+The `ccg` command is a convenient wrapper for managing the proxy.
 
-# Start the proxy (interactive model/token selection with fzf)
-python cli.py --run
-```
+- **`ccg`**: Starts the proxy and Claude Code.
+- **`ccg -c [args]`**: Pass arguments directly to `cli.py` for management tasks (e.g., `ccg -c --build`, `ccg -c --stop`).
+- **`ccg -p`**: Prints the project's installation path. Use with `cd $(ccg -p)` to navigate to the directory.
+- **`ccg -h`**: Shows the help menu.
 
 ### Usage
 
-Configure Claude Code to use the proxy:
+Once the proxy is running (using the `ccg` command), configure Claude Code to use it in a separate terminal:
 
 ```bash
 export ANTHROPIC_BASE_URL=http://localhost:7187
@@ -56,16 +63,6 @@ claude
 ```
 
 The proxy will now route Claude Code requests through your selected Groq model. Choose from various models including Kimi K2, Llama, Mixtral, and other text-based models available on Groq's platform.
-
-#### Quick Start Script
-
-For convenience, use the included `call.sh` script that automatically configures the environment and launches Claude Code:
-
-```bash
-./call.sh
-```
-
-This script sets the proxy URL, starts Claude Code, and cleans up the environment variables when done.
 
 ## Management Commands
 
