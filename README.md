@@ -32,10 +32,9 @@ cd cc-groq-proxy
 2. Run the installer to make the `ccg` command available system-wide:
 
 ```bash
+# this command simplifies all interactions with the proxy
 bash install.sh
 ```
-
-This command simplifies all interactions with the proxy.
 
 3. Configure your Groq API key:
 
@@ -132,7 +131,7 @@ Inspired by [claude-code-proxy](https://github.com/1rgs/claude-code-proxy) and t
 
 ## License
 
-This code base is licensed under the MIT License. See [LICENSE](./LICENSE.md) for more details.
+This code base is licensed under the MIT License. See [LICENSE](./LICENSE) for more details.
 
 ## Evaluation Reports
 
@@ -148,13 +147,13 @@ Anthropic's Claude models Sonnet 4 and Opus 4.1 are used in [Claude Code CLI](ht
 - **Claude Opus 4.1**: $15/M input, $75/M output
 - **Groq Kimi K2-0905**: $1/M input, $3/M output
 
-This makes Kimi **67–93% cheaper on input** and **80–96% cheaper on output**, depending on which Claude tier you compare against.
+This makes Kimi **67-93% cheaper on input** and **80-96% cheaper on output**, depending on which Claude tier you compare against.
 
 #### Performance
 
-- **Coding**: Kimi scores ~70–80% as strong as Claude Sonnet/Opus in benchmarked tasks. It trails slightly on curated coding sets but sometimes matches or exceeds in interactive coding (e.g., LiveCodeBench).
+- **Coding**: Kimi scores ~70-80% as strong as Claude Sonnet/Opus in benchmarked tasks. It trails slightly on curated coding sets but sometimes matches or exceeds in interactive coding (e.g., LiveCodeBench).
 - **Writing**: Comparable technical writing performance, though Claude remains more polished on complex narrative tasks.
-- **Context**: Kimi supports ~262k tokens vs Claude’s 1M, but this is sufficient for most CLI use cases.
+- **Context**: Kimi supports ~262k tokens vs Claude's 1M, but this is sufficient for most CLI use cases.
 
 #### Conclusion
 

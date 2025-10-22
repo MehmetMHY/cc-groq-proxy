@@ -69,7 +69,6 @@ python run.py follow    # Follow container logs in real-time
 ### Core Components
 
 1. **proxy.py** - Main proxy server implementation
-
    - FastAPI application that intercepts Anthropic API calls
    - Converts Anthropic message format to OpenAI format for Groq
    - Handles tool use blocks and converts between formats
@@ -77,7 +76,6 @@ python run.py follow    # Follow container logs in real-time
    - Rich logging with colored output showing input/output content and token usage
 
 2. **run.py** - Docker management script
-
    - Builds Docker images and manages containers
    - Interactive model selection using fzf
    - Interactive token limit selection (4096 to 1,048,576 tokens)
