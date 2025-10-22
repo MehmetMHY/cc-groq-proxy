@@ -1,8 +1,12 @@
 # Claude Code Groq Proxy
 
+> **📦 Archive Notice**
+>
+> As of **October 21, 2025**, the `ccg` project is no longer actively maintained. Anthropic's [Claude Haiku 4.5](https://www.anthropic.com/news/claude-haiku-4-5) was recently released and offers exceptional performance and pricing that rivals Groq's best hosted models, making this proxy largely redundant. For most **Claude Code CLI** use cases, using **Haiku 4.5** directly is the recommended approach. Models will come and go, but **Claude Haiku 4.5** shows that models will get better and cheaper over time, making `ccg` increasingly redundant as time moves on.
+
 ## About
 
-A FastAPI proxy server that enables using any text-based model hosted on Groq with [Claude Code CLI](https://github.com/anthropics/claude-code), providing significant cost savings while maintaining strong performance for coding tasks.
+Claude Code Groq Proxy (`ccg`) is a FastAPI proxy server that enables using any text-based model hosted on Groq with [Claude Code CLI](https://github.com/anthropics/claude-code), providing significant cost savings while maintaining strong performance for coding tasks.
 
 ## Getting Started
 
